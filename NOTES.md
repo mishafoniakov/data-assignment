@@ -12,6 +12,8 @@
 - Добавлены аналитические DuckDB view для длительностей этапов, ошибок и LLM-вызовов.
 - Добавлен `analytics.report` для вывода агрегированных метрик из DuckDB.
 - Настроены локальные команды в `Makefile` и GitHub Actions CI: lint, генерация логов, ingest, повторный ingest и report.
+- Добавлены `Dockerfile` и `docker-compose.yml` для запуска полного пайплайна в контейнере.
+- Добавлены Docker-цели в `Makefile`: `docker-build`, `docker-compose-config`, `docker-run`.
 
 ## Решения и допущения
 - DuckDB выбран как простой локальный аналитический слой без отдельного сервера.
@@ -21,6 +23,7 @@
 - SQL и параметры отчёта вынесены в `configs/report.py`, строки отчёта валидируются Pydantic-моделями из `models/report.py`.
 - Тестовые данные ingest вынесены в `configs/ingest_test_data.py`, тест-кейсы описаны Pydantic-моделями из `models/ingest_test_case.py`.
 - Тестовые данные метрик вынесены в `configs/metrics_test_data.py`, ожидаемые метрики описаны Pydantic-моделями из `models/metrics_test_case.py`.
+- Путь к DuckDB можно переопределить через `DUCKDB_PATH`; это используется в Docker Compose для хранения базы в volume.
 - Сгенерированные артефакты (`*.log`, `*.duckdb`) не коммитятся.
 
 ## Что не успел / сделал бы дальше
@@ -36,3 +39,9 @@
 - `uv run python -m analytics.ingest sample_logs`
 - Повторный запуск `uv run python -m analytics.ingest sample_logs` для проверки идемпотентности.
 - `uv run python -m analytics.report`
+- `docker compose config`
+- `docker build -t data-assignment:latest .`
+- `docker compose --profile full run --rm all`
+- `make docker-build`
+- `make docker-compose-config`
+- `make docker-run`

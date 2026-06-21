@@ -1,6 +1,7 @@
 """Конфигурация загрузки логов и аналитических представлений."""
 
 from dataclasses import dataclass
+from os import getenv
 from pathlib import Path
 
 
@@ -9,7 +10,7 @@ class IngestConfig:
     """Настройки пайплайна загрузки логов."""
 
     default_logs_dir: Path = Path("sample_logs")
-    db_path: Path = Path("analytics.duckdb")
+    db_path: Path = Path(getenv("DUCKDB_PATH", "analytics.duckdb"))
     pipeline_log_path: Path = Path("pipeline.log")
     log_file_pattern: str = "*.log"
     event_id_fields: tuple[str, ...] = (
@@ -51,6 +52,14 @@ CREATE TABLE IF NOT EXISTS ingestion_log (
     last_loaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 """
+
+ANALYTICS_VIEW_NAMES = (
+    "v_stage_durations",
+    "v_stage_pairs",
+    "v_task_errors",
+    "v_error_types",
+    "v_llm_calls",
+)
 
 
 ANALYTICS_VIEWS_SQL = (

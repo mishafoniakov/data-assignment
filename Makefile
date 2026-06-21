@@ -1,4 +1,4 @@
-.PHONY: help generate ingest report test test-ingest test-metrics lint ci clean
+.PHONY: help generate ingest report test test-ingest test-metrics lint docker-build docker-compose-config docker-run ci clean
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
@@ -25,6 +25,15 @@ test-metrics: ## Run analytics metrics tests
 
 lint: ## Run ruff checks
 	uv run ruff check analytics/ configs/ models/ tests/ generate_logs.py
+
+docker-build: ## Build Docker image
+	docker build -t data-assignment:latest .
+
+docker-compose-config: ## Validate docker-compose.yml
+	docker compose config
+
+docker-run: ## Run full pipeline in Docker Compose
+	docker compose --profile full run --rm all
 
 ci: ## Run local CI checks
 	uv sync

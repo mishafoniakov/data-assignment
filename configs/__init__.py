@@ -1,6 +1,7 @@
 """Публичные конфиги проекта."""
 
 from configs.ingest import (
+    ANALYTICS_VIEW_NAMES,
     ANALYTICS_VIEWS_SQL,
     CONFIG,
     EVENTS_TABLE_SQL,
@@ -32,6 +33,7 @@ from configs.report import (
 
 __all__ = [
     "ANALYTICS_VIEWS_SQL",
+    "ANALYTICS_VIEW_NAMES",
     "CONFIG",
     "ERROR_TYPES_SQL",
     "EVENTS_TABLE_SQL",

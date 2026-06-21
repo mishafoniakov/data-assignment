@@ -44,3 +44,12 @@ jobs:
 
       - name: Generate analytics report
         run: uv run python -m analytics.report
+
+      - name: Validate Docker Compose
+        run: docker compose config
+
+      - name: Build Docker image
+        run: docker build -t data-assignment:latest .
+
+      - name: Run Docker pipeline
+        run: docker compose --profile full run --rm all

@@ -15,6 +15,7 @@ import duckdb
 from pydantic import ValidationError
 
 from configs import (
+    ANALYTICS_VIEW_NAMES,
     ANALYTICS_VIEWS_SQL,
     CONFIG,
     EVENTS_TABLE_SQL,
@@ -78,7 +79,30 @@ def iter_events(logs_dir: str | Path, config: IngestConfig = CONFIG) -> tuple[li
 
 def init_db(conn: duckdb.DuckDBPyConnection) -> None:
     """Создаёт таблицы, если их нет."""
+    columns = conn.execute(
+        """
+        SELECT column_name, data_type
+        FROM information_schema.columns
+        WHERE table_name = 'events'
+        """
+    ).fetchall()
+    event_id_type = next((column[1] for column in columns if column[0] == "event_id"), None)
+    if event_id_type and event_id_type.upper() != "BIGINT":
+        for view_name in ANALYTICS_VIEW_NAMES:
+            conn.execute(f"DROP VIEW IF EXISTS {view_name}")
+        conn.execute("DROP TABLE events")
+
     conn.execute(EVENTS_TABLE_SQL)
+
+    columns = conn.execute(
+        """
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_name = 'ingestion_log'
+        """
+    ).fetchall()
+    if columns and "file_path" not in {column[0] for column in columns}:
+        conn.execute("DROP TABLE ingestion_log")
     conn.execute(INGESTION_LOG_TABLE_SQL)
 
 

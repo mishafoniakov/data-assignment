@@ -1,0 +1,45 @@
+services:
+  generate:
+    build: .
+    image: data-assignment:latest
+    command: python generate_logs.py --tasks 200 --out /data/app.log
+    volumes:
+      - ./sample_logs:/data
+
+  ingest:
+    image: data-assignment:latest
+    command: python -m analytics.ingest /data/
+    environment:
+      DUCKDB_PATH: /data/db/analytics.duckdb
+    volumes:
+      - ./sample_logs:/data
+      - duckdb_data:/data/db
+    depends_on:
+      generate:
+        condition: service_completed_successfully
+
+  report:
+    image: data-assignment:latest
+    command: python -m analytics.report
+    environment:
+      DUCKDB_PATH: /data/db/analytics.duckdb
+    volumes:
+      - duckdb_data:/data/db
+    depends_on:
+      ingest:
+        condition: service_completed_successfully
+
+  all:
+    build: .
+    image: data-assignment:latest
+    command: sh -c "rm -f /data/db/analytics.duckdb /data/db/analytics.duckdb.wal && python generate_logs.py --tasks 200 --out /data/app.log && python -m analytics.ingest /data/ && python -m analytics.ingest /data/ && python -m analytics.report"
+    environment:
+      DUCKDB_PATH: /data/db/analytics.duckdb
+    volumes:
+      - ./sample_logs:/data
+      - duckdb_data:/data/db
+    profiles:
+      - full
+
+volumes:
+  duckdb_data:
