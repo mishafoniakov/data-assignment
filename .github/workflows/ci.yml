@@ -26,3 +26,12 @@ jobs:
 
       - name: Lint
         run: uv run ruff check .
+
+      - name: Generate test logs
+        run: uv run python generate_logs.py --tasks 200 --out sample_logs/app.log
+
+      - name: Validate ingest
+        run: |
+          rm -f analytics.duckdb analytics.duckdb.wal
+          uv run python -m analytics.ingest sample_logs
+          uv run python -m analytics.ingest sample_logs
