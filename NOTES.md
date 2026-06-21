@@ -19,16 +19,18 @@
 - Для `event_id` используются поля события, которые отличают основные типы логов друг от друга.
 - Pydantic используется для нормализации типов и отбраковки некорректных JSON-событий.
 - SQL и параметры отчёта вынесены в `configs/report.py`, строки отчёта валидируются Pydantic-моделями из `models/report.py`.
+- Тестовые данные ingest вынесены в `configs/ingest_test_data.py`, тест-кейсы описаны Pydantic-моделями из `models/ingest_test_case.py`.
 - Сгенерированные артефакты (`*.log`, `*.duckdb`) не коммитятся.
 
 ## Что не успел / сделал бы дальше
-- Добавить pytest-тесты для генератора, Pydantic-модели и идемпотентности загрузчика.
+- Расширить pytest-покрытие на генератор, отчёт и полную загрузку в DuckDB.
 - Добавить CLI-аргумент для пути к DuckDB-базе.
 - Добавить отчёты или экспорт агрегатов поверх созданных view.
 
 ## Как проверял
 - `make ci`
-- `uv run ruff check analytics/ configs/ models/ generate_logs.py`
+- `uv run ruff check analytics/ configs/ models/ tests/ generate_logs.py`
+- `uv run pytest`
 - `uv run python generate_logs.py --tasks 200 --out sample_logs/app.log`
 - `uv run python -m analytics.ingest sample_logs`
 - Повторный запуск `uv run python -m analytics.ingest sample_logs` для проверки идемпотентности.

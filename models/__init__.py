@@ -1,5 +1,6 @@
 """Публичные модели данных проекта."""
 
+from models.ingest_test_case import EventIdTestCase, ParserTestCase
 from models.log_event import LogEvent
 from models.report import (
     ErrorSummary,
@@ -12,12 +13,14 @@ from models.report import (
 )
 
 __all__ = [
+    "EventIdTestCase",
     "ErrorSummary",
     "ErrorTypeMetric",
     "LlmRetryMetric",
     "LlmRetrySummary",
     "LogEvent",
     "ModelUsageMetric",
+    "ParserTestCase",
     "ReportSummary",
     "StageDurationMetric",
 ]
