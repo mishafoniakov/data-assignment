@@ -33,17 +33,8 @@ jobs:
       - name: Run metrics tests
         run: uv run pytest tests/test_metrics.py
 
-      - name: Generate test logs
-        run: uv run python generate_logs.py --tasks 200 --out sample_logs/app.log
-
-      - name: Validate ingest
-        run: |
-          rm -f analytics.duckdb analytics.duckdb.wal
-          uv run python -m analytics.ingest sample_logs
-          uv run python -m analytics.ingest sample_logs
-
-      - name: Generate analytics report
-        run: uv run python -m analytics.report
+      - name: Run local pipeline script
+        run: ./run.sh local
 
       - name: Validate Docker Compose
         run: docker compose config

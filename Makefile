@@ -1,7 +1,10 @@
-.PHONY: help generate ingest report test test-ingest test-metrics lint docker-build docker-compose-config docker-run ci clean
+.PHONY: help run generate ingest report test test-ingest test-metrics lint docker-build docker-compose-config docker-run ci clean
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
+
+run: ## Run full local pipeline
+	./run.sh local
 
 generate: ## Generate sample application logs
 	@mkdir -p sample_logs
@@ -33,17 +36,13 @@ docker-compose-config: ## Validate docker-compose.yml
 	docker compose config
 
 docker-run: ## Run full pipeline in Docker Compose
-	docker compose --profile full run --rm all
+	./run.sh docker
 
 ci: ## Run local CI checks
 	uv sync
 	$(MAKE) lint
 	$(MAKE) test
-	$(MAKE) generate
-	rm -f analytics.duckdb analytics.duckdb.wal
-	$(MAKE) ingest
-	$(MAKE) ingest
-	$(MAKE) report
+	./run.sh local
 
 clean: ## Remove generated logs
 	rm -f sample_logs/*.log analytics.duckdb analytics.duckdb.wal pipeline.log

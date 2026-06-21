@@ -14,6 +14,8 @@
 - Настроены локальные команды в `Makefile` и GitHub Actions CI: lint, генерация логов, ingest, повторный ingest и report.
 - Добавлены `Dockerfile` и `docker-compose.yml` для запуска полного пайплайна в контейнере.
 - Добавлены Docker-цели в `Makefile`: `docker-build`, `docker-compose-config`, `docker-run`.
+- Добавлен `run.sh` как единая точка запуска локального и Docker-пайплайна.
+- Написан `README.md` с описанием структуры проекта, быстрым стартом, Docker-командами и проверками.
 
 ## Решения и допущения
 - DuckDB выбран как простой локальный аналитический слой без отдельного сервера.
@@ -24,6 +26,8 @@
 - Тестовые данные ingest вынесены в `configs/ingest_test_data.py`, тест-кейсы описаны Pydantic-моделями из `models/ingest_test_case.py`.
 - Тестовые данные метрик вынесены в `configs/metrics_test_data.py`, ожидаемые метрики описаны Pydantic-моделями из `models/metrics_test_case.py`.
 - Путь к DuckDB можно переопределить через `DUCKDB_PATH`; это используется в Docker Compose для хранения базы в volume.
+- `run.sh local` отвечает за runtime-сценарий, а `make ci` добавляет к нему lint и pytest.
+- `run.sh docker` валидирует compose, собирает образ и запускает полный контейнерный пайплайн.
 - Сгенерированные артефакты (`*.log`, `*.duckdb`) не коммитятся.
 
 ## Что не успел / сделал бы дальше
@@ -33,6 +37,8 @@
 
 ## Как проверял
 - `make ci`
+- `./run.sh local`
+- `./run.sh docker`
 - `uv run ruff check analytics/ configs/ models/ tests/ generate_logs.py`
 - `uv run pytest`
 - `uv run python generate_logs.py --tasks 200 --out sample_logs/app.log`
