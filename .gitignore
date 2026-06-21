@@ -1,5 +1,6 @@
 # Python
 __pycache__/
+**/__pycache__/
 *.py[cod]
 .venv/
 venv/
@@ -33,3 +34,4 @@ dist/
 
 # LOGS
 *.log
+pipeline.log

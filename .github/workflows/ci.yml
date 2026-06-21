@@ -25,7 +25,7 @@ jobs:
         run: uv sync
 
       - name: Lint
-        run: uv run ruff check .
+        run: uv run ruff check analytics/ configs/ models/ generate_logs.py
 
       - name: Generate test logs
         run: uv run python generate_logs.py --tasks 200 --out sample_logs/app.log
@@ -35,3 +35,6 @@ jobs:
           rm -f analytics.duckdb analytics.duckdb.wal
           uv run python -m analytics.ingest sample_logs
           uv run python -m analytics.ingest sample_logs
+
+      - name: Generate analytics report
+        run: uv run python -m analytics.report

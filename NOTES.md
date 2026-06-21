@@ -10,13 +10,15 @@
 - Бизнес-настройки и SQL-схемы вынесены в корневой пакет `configs/`.
 - Структура лог-событий валидируется через Pydantic-модель из корневого пакета `models/`.
 - Добавлены аналитические DuckDB view для длительностей этапов, ошибок и LLM-вызовов.
-- Настроены локальные команды в `Makefile` и GitHub Actions CI.
+- Добавлен `analytics.report` для вывода агрегированных метрик из DuckDB.
+- Настроены локальные команды в `Makefile` и GitHub Actions CI: lint, генерация логов, ingest, повторный ingest и report.
 
 ## Решения и допущения
 - DuckDB выбран как простой локальный аналитический слой без отдельного сервера.
 - Идемпотентность сделана на двух уровнях: хеш файла в `ingestion_log` и стабильный `event_id` на основе `sha256`.
 - Для `event_id` используются поля события, которые отличают основные типы логов друг от друга.
 - Pydantic используется для нормализации типов и отбраковки некорректных JSON-событий.
+- SQL и параметры отчёта вынесены в `configs/report.py`, строки отчёта валидируются Pydantic-моделями из `models/report.py`.
 - Сгенерированные артефакты (`*.log`, `*.duckdb`) не коммитятся.
 
 ## Что не успел / сделал бы дальше
@@ -26,7 +28,8 @@
 
 ## Как проверял
 - `make ci`
-- `uv run ruff check .`
+- `uv run ruff check analytics/ configs/ models/ generate_logs.py`
 - `uv run python generate_logs.py --tasks 200 --out sample_logs/app.log`
 - `uv run python -m analytics.ingest sample_logs`
 - Повторный запуск `uv run python -m analytics.ingest sample_logs` для проверки идемпотентности.
+- `uv run python -m analytics.report`
