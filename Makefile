@@ -1,4 +1,4 @@
-.PHONY: help generate ingest report test lint ci clean
+.PHONY: help generate ingest report test test-ingest test-metrics lint ci clean
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
@@ -14,7 +14,14 @@ report: ## Print analytics report from DuckDB
 	uv run python -m analytics.report
 
 test: ## Run pytest tests
-	uv run pytest
+	$(MAKE) test-ingest
+	$(MAKE) test-metrics
+
+test-ingest: ## Run ingest parser/id tests
+	uv run pytest tests/test_ingest.py
+
+test-metrics: ## Run analytics metrics tests
+	uv run pytest tests/test_metrics.py
 
 lint: ## Run ruff checks
 	uv run ruff check analytics/ configs/ models/ tests/ generate_logs.py

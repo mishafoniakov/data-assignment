@@ -27,8 +27,11 @@ jobs:
       - name: Lint
         run: uv run ruff check analytics/ configs/ models/ tests/ generate_logs.py
 
-      - name: Run tests
-        run: uv run pytest
+      - name: Run ingest tests
+        run: uv run pytest tests/test_ingest.py
+
+      - name: Run metrics tests
+        run: uv run pytest tests/test_metrics.py
 
       - name: Generate test logs
         run: uv run python generate_logs.py --tasks 200 --out sample_logs/app.log

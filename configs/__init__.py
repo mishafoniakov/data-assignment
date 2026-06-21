@@ -12,6 +12,12 @@ from configs.ingest_test_data import (
     EVENT_ID_EVENT,
     PARSER_LOG_LINES,
 )
+from configs.metrics_test_data import (
+    ERROR_METRIC_ROWS,
+    METRICS_EVENTS_TABLE_SQL,
+    METRICS_VIEWS_SQL,
+    MODEL_USAGE_ROWS,
+)
 from configs.report import (
     ERROR_TYPES_SQL,
     FAILED_TASKS_SQL,
@@ -35,7 +41,11 @@ __all__ = [
     "INGESTION_LOG_TABLE_SQL",
     "IngestConfig",
     "LLM_RETRIES_SQL",
+    "ERROR_METRIC_ROWS",
+    "METRICS_EVENTS_TABLE_SQL",
+    "METRICS_VIEWS_SQL",
     "MODEL_USAGE_SQL",
+    "MODEL_USAGE_ROWS",
     "PARSER_LOG_LINES",
     "REPORT_CONFIG",
     "STAGE_DURATIONS_SQL",
